@@ -3,12 +3,12 @@
 require 'thor'
 require 'cardlet'
 
-module Cardlet
+module CardletCLI
   class Create < Thor
     option :name, required: true
     desc 'deck', 'Create a new deck'
     def deck
-      puts "Creating a deck called #{options[:name]}"
+      Cardlet::Deck.create(options[:name])
     end
   end
 
@@ -29,4 +29,4 @@ module Cardlet
   end
 end
 
-Cardlet::TopLevel.start(ARGV)
+CardletCLI::TopLevel.start(ARGV)
