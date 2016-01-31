@@ -3,11 +3,30 @@
 require 'thor'
 require 'cardlet'
 
-class TopLevel < Thor
-  desc "hello", "say hello"
-  def hello(name)
-    puts "Hey there #{name}"
+module Cardlet
+  class Create < Thor
+    option :name, required: true
+    desc 'deck', 'Create a new deck'
+    def deck
+      puts "Creating a deck called #{options[:name]}"
+    end
+  end
+
+  class Delete < Thor
+    option :name, required: true
+    desc 'deck', 'Delete a deck'
+    def deck
+      puts "Deleting a deck called #{options[:name]}"
+    end
+  end
+
+  class TopLevel < Thor
+    desc 'create [deck | card]', 'Create something'
+    subcommand 'create', Create
+
+    desc 'delete [deck | card]', 'Delete something'
+    subcommand 'delete', Delete
   end
 end
 
-TopLevel.start(ARGV)
+Cardlet::TopLevel.start(ARGV)
