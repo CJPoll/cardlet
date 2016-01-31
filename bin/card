@@ -1,0 +1,13 @@
+#! /usr/bin/env ruby
+
+require 'thor'
+require 'cardlet'
+
+class TopLevel < Thor
+  desc "hello", "say hello"
+  def hello(name)
+    puts "Hey there #{name}"
+  end
+end
+
+TopLevel.start(ARGV)
