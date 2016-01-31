@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Question do
+describe Cardlet::Question do
   let(:json_question) {
     {
       'type' => 'question',
@@ -24,14 +24,14 @@ describe Question do
     ]
   }
 
-  let(:questions) { Question.create(json_questions) }
+  let(:questions) { Cardlet::Question.create(json_questions) }
 
-  subject { Question.create(json_question) }
+  subject { Cardlet::Question.create(json_question) }
 
   describe '#new'  do
     context 'single json object' do
       it 'creates a question from a json object' do
-        expect(subject).to be_a(Question)
+        expect(subject).to be_a(Cardlet::Question)
       end
 
       it 'initializes the type from the json object' do
@@ -51,8 +51,8 @@ describe Question do
       it 'creates an array of questions from an array of json objects' do
         expect(questions).to be_a Array
         expect(questions.count).to eq 2
-        expect(questions.first).to be_a Question
-        expect(questions.last).to be_a Question
+        expect(questions.first).to be_a Cardlet::Question
+        expect(questions.last).to be_a Cardlet::Question
       end
 
       it 'initializes the questions with the correspondind input values' do

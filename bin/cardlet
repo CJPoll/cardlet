@@ -8,7 +8,8 @@ module CardletCLI
     option :name, required: true
     desc 'create', 'Create a new deck'
     def create
-      puts "Creating a deck called #{options[:name]}"
+      deck = Cardlet::Deck.new(options[:name])
+      Cardlet::Persistence::Deck.write(deck)
     end
 
     option :name, required: true
