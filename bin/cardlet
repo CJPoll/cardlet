@@ -17,7 +17,8 @@ module CardletCLI
     option :name, required: true
     desc 'delete', 'Delete an existing deck'
     def delete
-      puts "Deleting a deck called #{options[:name]}"
+      directory = options[:directory] || "#{Dir.home}/.cardlet/decks"
+      Cardlet::Persistence::Deck.delete(options[:name], directory)
     end
   end
 
