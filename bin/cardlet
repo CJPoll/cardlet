@@ -6,10 +6,12 @@ require 'cardlet'
 module CardletCLI
   class Deck < Thor
     option :name, required: true
+    option :directory
     desc 'create', 'Create a new deck'
     def create
       deck = Cardlet::Deck.new(options[:name])
-      Cardlet::Persistence::Deck.write(deck)
+      directory = options[:directory] || "#{Dir.home}/.cardlet/decks"
+      Cardlet::Persistence::Deck.write(deck, directory)
     end
 
     option :name, required: true

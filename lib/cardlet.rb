@@ -1,1 +1,3 @@
-require 'cardlet/question.rb'
+require 'cardlet/question'
+require 'cardlet/deck'
+require 'cardlet/persistence/deck'

@@ -23,7 +23,7 @@ Gem::Specification.new do |spec|
   end
 
   spec.bindir        = 'bin'
-  spec.executables   = ['card']
+  spec.executables   = ['cardlet']
   spec.require_paths = ['lib']
 
   spec.add_runtime_dependency 'thor', '~> 0.19.1'
