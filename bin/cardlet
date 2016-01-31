@@ -1,0 +1,44 @@
+#! /usr/bin/env ruby
+
+require 'thor'
+require 'cardlet'
+
+module CardletCLI
+  class Deck < Thor
+    option :name, required: true
+    desc 'create', 'Create a new deck'
+    def create
+      puts "Creating a deck called #{options[:name]}"
+    end
+
+    option :name, required: true
+    desc 'delete', 'Delete an existing deck'
+    def delete
+      puts "Deleting a deck called #{options[:name]}"
+    end
+  end
+
+  class Card < Thor
+    option :name, required: true
+    desc 'create', 'Create a new card'
+    def create
+      puts "Creating a card called #{options[:name]}"
+    end
+
+    option :name, required: true
+    desc 'delete', 'Delete an existing card'
+    def delete
+      puts "Deleting a card called #{options[:name]}"
+    end
+  end
+
+  class TopLevel < Thor
+    desc 'card [ create | delete ]', 'Do something with a card'
+    subcommand 'card', Card
+
+    desc 'deck [ create | delete ]', 'Do something with a deck'
+    subcommand 'deck', Deck
+  end
+end
+
+CardletCLI::TopLevel.start(ARGV)
