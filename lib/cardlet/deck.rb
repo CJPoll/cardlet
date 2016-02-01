@@ -9,6 +9,10 @@ module Cardlet
       @questions = Question.create(questions)
     end
 
+    def add_question(question)
+      @questions << question
+    end
+
     def as_json
       {
         "name" => @name,

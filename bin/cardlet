@@ -49,13 +49,33 @@ module CardletCLI
     option :answer, required: true
     option :prompt, required: true
     def create
+      raise DeckNotFoundException unless Cardlet::Persistence::Deck.exist?(options[:name], directory)
 
+      deck_json = Cardlet::Persistence::Deck.load(options[:deck], directory)
+      deck_hash = JSON.parse(deck_json)
+      deck = Cardlet::Deck.from_json(deck_hash)
+
+      card = Cardlet::Question.create({
+        'type' => 'question',
+        'prompt' => options[:prompt],
+        'answer' => options[:answer]
+      })
+
+      deck.add_question(card)
+
+      Cardlet::Persistence::Deck.write(deck, directory)
     end
 
     option :name, required: true
     desc 'delete', 'Delete an existing card'
     def delete
       puts "Deleting a card called #{options[:name]}"
+    end
+
+    private
+
+    def directory
+      directory = options[:directory] || "#{Dir.home}/.cardlet/decks"
     end
   end
 

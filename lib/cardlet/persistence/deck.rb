@@ -8,6 +8,11 @@ module Cardlet
         File.delete(filename)
       end
 
+      def self.exist?(name, directory)
+        filename = "#{directory}/#{name}"
+        File.exist?(filename)
+      end
+
       def self.index(directory)
         Dir.entries(directory).reject do |file|
           file == '.' || file == '..'

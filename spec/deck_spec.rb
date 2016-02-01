@@ -73,4 +73,20 @@ describe Cardlet::Deck do
       expect(subject.questions.first).to be_a Cardlet::Question
     end
   end
+
+  describe '#add_card' do
+    let(:question) {
+      Cardlet::Question.create({
+        'type' => 'question',
+        'prompt' => 'what is 2+2',
+        'answer' => '4'
+      })
+    }
+
+    it 'adds a card to the given deck' do
+      subject.add_question(question)
+
+      expect(subject.questions.length).to be 1
+    end
+  end
 end
