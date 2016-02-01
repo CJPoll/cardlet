@@ -10,23 +10,46 @@ module CardletCLI
     desc 'create', 'Create a new deck'
     def create
       deck = Cardlet::Deck.new(options[:name])
-      directory = options[:directory] || "#{Dir.home}/.cardlet/decks"
       Cardlet::Persistence::Deck.write(deck, directory)
+    end
+
+    option :directory
+    desc 'list', 'List all the decks'
+    def list
+      entries = Cardlet::Persistence::Deck.index(directory)
+      puts entries
+    end
+
+    option :name, required: true
+    option :directory
+    desc 'questions', 'List all questions in a deck'
+    def questions
+      json = Cardlet::Persistence::Deck.load(options[:name], directory)
+      hash = JSON.parse(json)
+      deck = Cardlet::Deck.from_json(hash)
+      puts deck.inspect
     end
 
     option :name, required: true
     desc 'delete', 'Delete an existing deck'
     def delete
-      directory = options[:directory] || "#{Dir.home}/.cardlet/decks"
       Cardlet::Persistence::Deck.delete(options[:name], directory)
+    end
+
+    private
+
+    def directory
+      directory = options[:directory] || "#{Dir.home}/.cardlet/decks"
     end
   end
 
   class Card < Thor
-    option :name, required: true
     desc 'create', 'Create a new card'
+    option :deck, required: true
+    option :answer, required: true
+    option :prompt, required: true
     def create
-      puts "Creating a card called #{options[:name]}"
+
     end
 
     option :name, required: true
