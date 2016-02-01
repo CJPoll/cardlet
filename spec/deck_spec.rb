@@ -17,7 +17,15 @@ describe Cardlet::Deck do
   end
 
   describe '#as_json' do
-    subject { Cardlet::Deck.new(deck_name).as_json }
+    let(:question_hash) { 
+      {
+        "type" => "question",
+        "prompt" => "what is your quest?",
+        "answer" => "to find the holy grail"
+      }
+    }
+
+    subject { Cardlet::Deck.new(deck_name).add_question(Cardlet::Question.new(question_hash)).as_json }
 
     it 'encodes to a ruby hash' do
       expect(subject).to be_a Hash
@@ -28,7 +36,7 @@ describe Cardlet::Deck do
     end
 
     it 'has a field for the deck\'s questions' do
-      expect(subject["questions"]).to eq []
+      expect(subject["questions"]).to eq [question_hash]
     end
   end
 
@@ -71,6 +79,7 @@ describe Cardlet::Deck do
     it 'initializes with the questions in the json document' do
       expect(subject.questions.length).to eq 2
       expect(subject.questions.first).to be_a Cardlet::Question
+      expect(subject.questions.first.answer).to eq "4"
     end
   end
 
@@ -83,10 +92,14 @@ describe Cardlet::Deck do
       })
     }
 
-    it 'adds a card to the given deck' do
-      subject.add_question(question)
+    subject { Cardlet::Deck.new(deck_name).add_question(question) }
 
+    it 'adds a card to the given deck' do
       expect(subject.questions.length).to be 1
+    end
+
+    it 'returns itself for chaining' do
+      expect(subject).to be_a Cardlet::Deck
     end
   end
 end

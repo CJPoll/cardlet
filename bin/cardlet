@@ -2,7 +2,6 @@
 
 require 'thor'
 require 'cardlet'
-require 'byebug'
 
 module CardletCLI
   class Deck < Thor
@@ -81,23 +80,22 @@ module CardletCLI
   end
 
   class TopLevel < Thor
-    desc 'card [ create | delete ]', 'Do something with a card'
-    subcommand 'card', Card
-
-    desc 'deck [ create | delete ]', 'Do something with a deck'
-    subcommand 'deck', Deck
-
     desc 'test', 'Test yourself on a given deck'
     option :name, required: true
     def test
       json = Cardlet::Persistence::Deck.load(options[:name], directory)
       hash = JSON.parse(json)
       deck = Cardlet::Deck.from_json(hash)
-      byebug
 
       quiz = Cardlet::Quiz.new(deck.questions)
       quiz.start
     end
+
+    desc 'card [ create | delete ]', 'Do something with a card'
+    subcommand 'card', Card
+
+    desc 'deck [ create | delete ]', 'Do something with a deck'
+    subcommand 'deck', Deck
 
     private
 

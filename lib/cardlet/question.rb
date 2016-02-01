@@ -12,5 +12,13 @@ module Cardlet
       return input.map { |q| Question.new(q) } if input.kind_of?(Array)
       Question.new(input)
     end
+
+    def as_json
+      {
+        "type" => @type,
+        "prompt" => @prompt,
+        "answer" => @answer
+      }
+    end
   end
 end

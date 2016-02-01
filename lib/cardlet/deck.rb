@@ -6,17 +6,18 @@ module Cardlet
 
     def initialize(deck_name, questions=[])
       @name = deck_name
-      @questions = Question.create(questions)
+      @questions = Cardlet::Question.create(questions)
     end
 
     def add_question(question)
       @questions << question
+      self
     end
 
     def as_json
       {
         "name" => @name,
-        "questions" => @questions
+        "questions" => @questions.map { |question| question.as_json }
       }
     end
 

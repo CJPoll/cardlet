@@ -46,21 +46,23 @@ module Cardlet
 
     def congratulate
       puts "Way to go!"
+      puts
     end
 
     def correct(question)
       puts "Almost - the correct answer is: #{question.answer}"
+      puts
     end
 
     def give_feedback(question_count, correct_count, incorrect_count)
-      percentage = correct_count / incorrect_count * 100
+      percentage = Float(correct_count) / question_count * 100
 
       puts <<-EOF
-      You got #{correct_count} questions right out of #{question count}.
-      That means you got #{percentage} correct.
+      You got #{correct_count} questions right out of #{question_count}.
+      That means you got #{percentage}% correct.
       EOF
 
-      if percentage < 95
+      if percentage >= 95
         puts "Great job - keep up the great work!"
       else
         puts "Keep practicing to raise your score."
