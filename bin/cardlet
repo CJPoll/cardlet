@@ -2,6 +2,7 @@
 
 require 'thor'
 require 'cardlet'
+require 'byebug'
 
 module CardletCLI
   class Deck < Thor
@@ -85,6 +86,24 @@ module CardletCLI
 
     desc 'deck [ create | delete ]', 'Do something with a deck'
     subcommand 'deck', Deck
+
+    desc 'test', 'Test yourself on a given deck'
+    option :name, required: true
+    def test
+      json = Cardlet::Persistence::Deck.load(options[:name], directory)
+      hash = JSON.parse(json)
+      deck = Cardlet::Deck.from_json(hash)
+      byebug
+
+      quiz = Cardlet::Quiz.new(deck.questions)
+      quiz.start
+    end
+
+    private
+
+    def directory
+      directory = options[:directory] || "#{Dir.home}/.cardlet/decks"
+    end
   end
 end
 
