@@ -5,7 +5,8 @@ describe Cardlet::Question do
     {
       'type' => 'question',
       'prompt' => 'What is 2 + 2?',
-      'answer' => '4'
+      'answer' => '4',
+      'tags' => ['hello', 'world']
     }
   }
 
@@ -45,6 +46,20 @@ describe Cardlet::Question do
       it 'initializes the answer from the json object' do
         expect(subject.answer).to eq json_question['answer']
       end
+
+      it 'initializes tags from the json object' do
+        expect(subject.tags).to eq ['hello', 'world']
+      end
+
+      it 'defaults tags to an empty array' do
+        question = Cardlet::Question.create({
+          'type' => 'question',
+          'prompt' => 'What is 2 + 2?',
+          'answer' => '4'
+        })
+
+        expect(question.tags).to eq []
+      end
     end
 
     context 'array of question json objects' do
@@ -59,6 +74,16 @@ describe Cardlet::Question do
         expect(questions.first.answer).to eq '4'
         expect(questions.last.answer).to eq '5'
       end
+    end
+  end
+
+  describe '#add_tag' do
+    it 'returns the card' do
+      expect(subject.add_tag('hi')).to be_a Cardlet::Question
+    end
+
+    it 'adds a tag to a question' do
+      expect(subject.add_tag('hi').tags).to include 'hi'
     end
   end
 end

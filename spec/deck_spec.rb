@@ -21,7 +21,8 @@ describe Cardlet::Deck do
       {
         "type" => "question",
         "prompt" => "what is your quest?",
-        "answer" => "to find the holy grail"
+        "answer" => "to find the holy grail",
+        "tags" => []
       }
     }
 

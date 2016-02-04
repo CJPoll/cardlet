@@ -1,11 +1,12 @@
 module Cardlet
   class Question
-    attr_accessor :answer, :prompt, :type
+    attr_accessor :answer, :prompt, :tags, :type
 
     def initialize(json_question)
       @type = json_question["type"]
       @prompt = json_question["prompt"]
       @answer = json_question["answer"]
+      @tags = json_question["tags"] || []
     end
 
     def self.create(input)
@@ -13,11 +14,17 @@ module Cardlet
       Question.new(input)
     end
 
+    def add_tag(tag)
+      @tags << tag
+      self
+    end
+
     def as_json
       {
         "type" => @type,
         "prompt" => @prompt,
-        "answer" => @answer
+        "answer" => @answer,
+        "tags" => @tags
       }
     end
   end
