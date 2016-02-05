@@ -21,6 +21,13 @@ module Cardlet
       }
     end
 
+    def cards_matching(tag)
+      return @questions unless tag && !(tag.empty?)
+      @questions.select do |question|
+        question.match?(tag)
+      end
+    end
+
     def delete_question(uuid)
       @questions = @questions.reject do |q|
         q.uuid == uuid

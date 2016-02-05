@@ -69,6 +69,15 @@ module Cardlet
     deck
   end
 
+  def self.test(deck, tag=nil, directory=DEFAULT_DIR)
+    json = Cardlet::Persistence::Deck.load(deck, directory)
+    hash = JSON.parse(json)
+    deck = Cardlet::Deck.from_json(hash)
+
+    quiz = Cardlet::Quiz.new(deck.cards_matching(tag))
+    quiz.start
+  end
+
   private
 
   def self.get_deck(deck, directory)

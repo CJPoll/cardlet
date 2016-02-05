@@ -119,4 +119,47 @@ describe Cardlet::Deck do
       expect(subject.delete_question(question.uuid)).to be_a Cardlet::Deck
     end
   end
+
+  describe '#cards_matching' do
+    let(:json_hash) {
+      {
+        "name" => "#{deck_name}",
+        "questions" => [
+          {
+            "uuid" => 1,
+            "type" => "question",
+            "prompt" => "What is 2 + 2?",
+            "answer" => "4",
+            "tags" => ['hello']
+          },
+          {
+            "uuid" => 2,
+            "type" => "question",
+            "prompt" => "What is 2 + 3",
+            "answer" => "5",
+            "tags" => ['world']
+          }
+        ]
+      }
+    }
+
+    subject { Cardlet::Deck.from_json(json_hash) }
+
+    it 'only includes questions that match the tag' do
+
+      results = subject.cards_matching('world')
+      expect(results.length).to eq 1
+      expect(results.first.uuid).to eq 2
+    end
+
+    it 'returns all questions if tag is nil' do
+      results = subject.cards_matching(nil)
+      expect(results.length).to eq 2
+    end
+
+    it 'returns all questions if tag is an empty string' do
+      results = subject.cards_matching('')
+      expect(results.length).to eq 2
+    end
+  end
 end

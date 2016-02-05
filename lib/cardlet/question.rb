@@ -31,5 +31,9 @@ module Cardlet
         'tags' => @tags
       }
     end
+
+    def match?(tag)
+      @tags.include?(tag)
+    end
   end
 end

@@ -96,4 +96,14 @@ describe Cardlet::Question do
       expect(subject.add_tag('hi').tags).to include 'hi'
     end
   end
+
+  describe '#match?' do
+    it 'knows when a card matches a tag' do
+      expect(subject.match?('hello')).to be true
+    end
+
+    it 'knows when a card does not match a given tag' do
+      expect(subject.match?('wat?')).to be false
+    end
+  end
 end
