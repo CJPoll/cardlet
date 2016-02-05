@@ -9,31 +9,31 @@ module CardletCLI
     option :directory
     desc 'create', 'Create a new deck'
     def create
-      deck = Cardlet::Deck.new(options[:name])
-      Cardlet::Persistence::Deck.write(deck, directory)
+      Cardlet.create_deck(options[:name], directory)
     end
 
     option :directory
     desc 'list', 'List all the decks'
     def list
-      entries = Cardlet::Persistence::Deck.index(directory)
-      puts entries
+      decks = Cardlet.list_decks
+      puts decks
     end
 
     option :name, required: true
     option :directory
     desc 'questions', 'List all questions in a deck'
     def questions
-      json = Cardlet::Persistence::Deck.load(options[:name], directory)
-      hash = JSON.parse(json)
-      deck = Cardlet::Deck.from_json(hash)
-      puts deck.inspect
+      questions = Cardlet.list_questions(options[:name])
+      questions.each do |q|
+        puts q.as_json.without("type")
+      end
     end
 
     option :name, required: true
+    option :directory
     desc 'delete', 'Delete an existing deck'
     def delete
-      Cardlet::Persistence::Deck.delete(options[:name], directory)
+      Cardlet.delete(options[:name])
     end
 
     private
@@ -45,31 +45,18 @@ module CardletCLI
 
   class Card < Thor
     desc 'create', 'Create a new card'
-    option :deck, required: true
     option :answer, required: true
+    option :deck, required: true
     option :prompt, required: true
     def create
-      raise DeckNotFoundException unless Cardlet::Persistence::Deck.exist?(options[:name], directory)
-
-      deck_json = Cardlet::Persistence::Deck.load(options[:deck], directory)
-      deck_hash = JSON.parse(deck_json)
-      deck = Cardlet::Deck.from_json(deck_hash)
-
-      card = Cardlet::Question.create({
-        'type' => 'question',
-        'prompt' => options[:prompt],
-        'answer' => options[:answer]
-      })
-
-      deck.add_question(card)
-
-      Cardlet::Persistence::Deck.write(deck, directory)
+      Cardlet.create_card(options[:deck], options[:prompt], options[:answer])
     end
 
-    option :name, required: true
+    option :uuid, required: true
+    option :deck, required: true
     desc 'delete', 'Delete an existing card'
     def delete
-      puts "Deleting a card called #{options[:name]}"
+      Cardlet.delete_card(options[:deck], options[:uuid])
     end
 
     private

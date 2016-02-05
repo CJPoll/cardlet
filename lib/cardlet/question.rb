@@ -1,12 +1,15 @@
+require 'securerandom'
+
 module Cardlet
   class Question
-    attr_accessor :answer, :prompt, :tags, :type
+    attr_accessor :answer, :prompt, :tags, :type, :uuid
 
     def initialize(json_question)
-      @type = json_question["type"]
-      @prompt = json_question["prompt"]
-      @answer = json_question["answer"]
-      @tags = json_question["tags"] || []
+      @uuid = json_question['uuid'] || SecureRandom.uuid
+      @type = json_question['type']
+      @prompt = json_question['prompt']
+      @answer = json_question['answer']
+      @tags = json_question['tags'] || []
     end
 
     def self.create(input)
@@ -21,10 +24,11 @@ module Cardlet
 
     def as_json
       {
-        "type" => @type,
-        "prompt" => @prompt,
-        "answer" => @answer,
-        "tags" => @tags
+        'uuid' => @uuid,
+        'type' => @type,
+        'prompt' => @prompt,
+        'answer' => @answer,
+        'tags' => @tags
       }
     end
   end

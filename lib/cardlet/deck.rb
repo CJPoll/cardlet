@@ -21,12 +21,28 @@ module Cardlet
       }
     end
 
+    def delete_question(uuid)
+      @questions = @questions.reject do |q|
+        q.uuid == uuid
+      end
+
+      self
+    end
+
     def self.from_json(hash)
       Deck.new(hash["name"], hash["questions"])
     end
 
     def to_json
       JSON.generate(as_json)
+    end
+
+    private
+
+    def find_card(uuid)
+      @questions.find do |q|
+        q.uuid == uuid
+      end
     end
   end
 end

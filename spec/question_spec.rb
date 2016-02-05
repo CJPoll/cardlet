@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Cardlet::Question do
   let(:json_question) {
     {
+      'uuid' => 'e614405d-ce16-47ce-88b2-6d54ddc3b228',
       'type' => 'question',
       'prompt' => 'What is 2 + 2?',
       'answer' => '4',
@@ -33,6 +34,15 @@ describe Cardlet::Question do
     context 'single json object' do
       it 'creates a question from a json object' do
         expect(subject).to be_a(Cardlet::Question)
+      end
+
+      it 'initializes with the given uuid' do
+        expect(subject.uuid).to eq 'e614405d-ce16-47ce-88b2-6d54ddc3b228'
+      end
+ 
+      it 'generates a uuid if none is given' do
+        question = Cardlet::Question.create(json_question.delete('uuid'))
+        expect(question.uuid).to match /[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}/
       end
 
       it 'initializes the type from the json object' do

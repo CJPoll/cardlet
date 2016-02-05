@@ -4,6 +4,16 @@ describe Cardlet::Deck do
   deck_name = 'MyDeck'
   default_dir = "#{Dir.home}/.cardlet/decks"
 
+  let(:question_hash) {
+    {
+      "uuid" => "27f164d7-0993-42a5-b5b7-24302f89814b",
+      "type" => "question",
+      "prompt" => "what is your quest?",
+      "answer" => "to find the holy grail",
+      "tags" => []
+    }
+  }
+
   subject { Cardlet::Deck.new(deck_name) }
 
   describe 'getters' do
@@ -17,15 +27,6 @@ describe Cardlet::Deck do
   end
 
   describe '#as_json' do
-    let(:question_hash) { 
-      {
-        "type" => "question",
-        "prompt" => "what is your quest?",
-        "answer" => "to find the holy grail",
-        "tags" => []
-      }
-    }
-
     subject { Cardlet::Deck.new(deck_name).add_question(Cardlet::Question.new(question_hash)).as_json }
 
     it 'encodes to a ruby hash' do
@@ -101,6 +102,21 @@ describe Cardlet::Deck do
 
     it 'returns itself for chaining' do
       expect(subject).to be_a Cardlet::Deck
+    end
+  end
+
+  describe '#delete_card' do
+    let(:question) { Cardlet::Question.new(question_hash) }
+
+    subject { Cardlet::Deck.new(deck_name).add_question(question) }
+
+    it 'removes a card from the deck' do
+      expect(subject.questions.count).to eq 1
+      expect(subject.delete_question(question.uuid).questions).to eq []
+    end
+
+    it 'returns the deck' do
+      expect(subject.delete_question(question.uuid)).to be_a Cardlet::Deck
     end
   end
 end
