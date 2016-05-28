@@ -25,7 +25,16 @@ Gem::Specification.new do |spec|
   spec.bindir        = 'bin'
   spec.executables   = ['cardlet']
   spec.require_paths = ['lib']
-  spec.files         = ['lib/cardlet.rb', 'lib/cardlet/deck.rb', 'lib/cardlet/question.rb', 'lib/cardlet/quiz.rb', 'lib/cardlet/persistence/deck.rb']
+  spec.files         = [
+    'lib/cardlet.rb',
+    'lib/cardlet/deck.rb',
+    'lib/cardlet/hash.rb',
+    'lib/cardlet/cards/question.rb',
+    'lib/cardlet/cards/faceted_question.rb',
+    'lib/cardlet/cards/card.rb',
+    'lib/cardlet/quiz.rb',
+    'lib/cardlet/persistence/deck.rb'
+  ]
 
   spec.add_runtime_dependency 'thor', '~> 0.19.1'
 

@@ -22,12 +22,12 @@ describe Cardlet::Deck do
     end
 
     it 'has a field for the deck\'s questions' do
-      expect(subject.questions).to eq []
+      expect(subject.cards).to eq []
     end
   end
 
   describe '#as_json' do
-    subject { Cardlet::Deck.new(deck_name).add_question(Cardlet::Question.new(question_hash)).as_json }
+    subject { Cardlet::Deck.new(deck_name).add_card(Cardlet::Cards::Question.new(question_hash)).as_json }
 
     it 'encodes to a ruby hash' do
       expect(subject).to be_a Hash
@@ -37,8 +37,8 @@ describe Cardlet::Deck do
       expect(subject["name"]).to eq deck_name
     end
 
-    it 'has a field for the deck\'s questions' do
-      expect(subject["questions"]).to eq [question_hash]
+    it 'has a field for the deck\'s cards' do
+      expect(subject["cards"]).to eq [question_hash]
     end
   end
 
@@ -57,7 +57,7 @@ describe Cardlet::Deck do
     let(:json_hash) {
       {
         "name" => "#{deck_name}",
-        "questions" => [
+        "cards" => [
           {
             "type" => "question",
             "prompt" => "What is 2 + 2?",
@@ -79,25 +79,25 @@ describe Cardlet::Deck do
     end
 
     it 'initializes with the questions in the json document' do
-      expect(subject.questions.length).to eq 2
-      expect(subject.questions.first).to be_a Cardlet::Question
-      expect(subject.questions.first.answer).to eq "4"
+      expect(subject.cards.length).to eq 2
+      expect(subject.cards.first).to be_a Cardlet::Cards::Question
+      expect(subject.cards.first.answer).to eq "4"
     end
   end
 
   describe '#add_card' do
     let(:question) {
-      Cardlet::Question.create({
+      Cardlet::Cards::Question.create({
         'type' => 'question',
         'prompt' => 'what is 2+2',
         'answer' => '4'
       })
     }
 
-    subject { Cardlet::Deck.new(deck_name).add_question(question) }
+    subject { Cardlet::Deck.new(deck_name).add_card(question) }
 
     it 'adds a card to the given deck' do
-      expect(subject.questions.length).to be 1
+      expect(subject.cards.length).to be 1
     end
 
     it 'returns itself for chaining' do
@@ -106,17 +106,17 @@ describe Cardlet::Deck do
   end
 
   describe '#delete_card' do
-    let(:question) { Cardlet::Question.new(question_hash) }
+    let(:question) { Cardlet::Cards::Question.new(question_hash) }
 
-    subject { Cardlet::Deck.new(deck_name).add_question(question) }
+    subject { Cardlet::Deck.new(deck_name).add_card(question) }
 
     it 'removes a card from the deck' do
-      expect(subject.questions.count).to eq 1
-      expect(subject.delete_question(question.uuid).questions).to eq []
+      expect(subject.cards.count).to eq 1
+      expect(subject.delete_card(question.uuid).cards).to eq []
     end
 
     it 'returns the deck' do
-      expect(subject.delete_question(question.uuid)).to be_a Cardlet::Deck
+      expect(subject.delete_card(question.uuid)).to be_a Cardlet::Deck
     end
   end
 
@@ -124,7 +124,7 @@ describe Cardlet::Deck do
     let(:json_hash) {
       {
         "name" => "#{deck_name}",
-        "questions" => [
+        "cards" => [
           {
             "uuid" => 1,
             "type" => "question",

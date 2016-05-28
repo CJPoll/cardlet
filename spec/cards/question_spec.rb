@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Cardlet::Question do
+describe Cardlet::Cards::Question do
   let(:json_question) {
     {
       'uuid' => 'e614405d-ce16-47ce-88b2-6d54ddc3b228',
@@ -26,14 +26,14 @@ describe Cardlet::Question do
     ]
   }
 
-  let(:questions) { Cardlet::Question.create(json_questions) }
+  let(:questions) { Cardlet::Cards::Card.create(json_questions) }
 
-  subject { Cardlet::Question.create(json_question) }
+  subject { Cardlet::Cards::Card.create(json_question) }
 
   describe '#new'  do
     context 'single json object' do
       it 'creates a question from a json object' do
-        expect(subject).to be_a(Cardlet::Question)
+        expect(subject).to be_a(Cardlet::Cards::Question)
       end
 
       it 'initializes with the given uuid' do
@@ -41,7 +41,7 @@ describe Cardlet::Question do
       end
  
       it 'generates a uuid if none is given' do
-        question = Cardlet::Question.create(json_question.delete('uuid'))
+        question = Cardlet::Cards::Card.create(json_question.without('uuid'))
         expect(question.uuid).to match /[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}/
       end
 
@@ -62,7 +62,7 @@ describe Cardlet::Question do
       end
 
       it 'defaults tags to an empty array' do
-        question = Cardlet::Question.create({
+        question = Cardlet::Cards::Card.create({
           'type' => 'question',
           'prompt' => 'What is 2 + 2?',
           'answer' => '4'
@@ -76,8 +76,8 @@ describe Cardlet::Question do
       it 'creates an array of questions from an array of json objects' do
         expect(questions).to be_a Array
         expect(questions.count).to eq 2
-        expect(questions.first).to be_a Cardlet::Question
-        expect(questions.last).to be_a Cardlet::Question
+        expect(questions.first).to be_a Cardlet::Cards::Question
+        expect(questions.last).to be_a Cardlet::Cards::Question
       end
 
       it 'initializes the questions with the correspondind input values' do
@@ -89,7 +89,7 @@ describe Cardlet::Question do
 
   describe '#add_tag' do
     it 'returns the card' do
-      expect(subject.add_tag('hi')).to be_a Cardlet::Question
+      expect(subject.add_tag('hi')).to be_a Cardlet::Cards::Question
     end
 
     it 'adds a tag to a question' do

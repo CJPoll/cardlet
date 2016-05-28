@@ -21,10 +21,10 @@ module CardletCLI
 
     option :name, required: true
     option :directory
-    desc 'questions', 'List all questions in a deck'
-    def questions
-      questions = Cardlet.list_questions(options[:name])
-      questions.each do |q|
+    desc 'cards', 'List all cards in a deck'
+    def cards
+      cards = Cardlet.list_cards(options[:name])
+      cards.each do |q|
         puts q.as_json.without("type")
       end
     end
@@ -74,7 +74,7 @@ module CardletCLI
       hash = JSON.parse(json)
       deck = Cardlet::Deck.from_json(hash)
 
-      quiz = Cardlet::Quiz.new(deck.questions)
+      quiz = Cardlet::Quiz.new(deck.cards)
       quiz.start
     end
 

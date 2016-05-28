@@ -27,6 +27,7 @@ module Cardlet
         FileUtils.mkdir_p(directory)
         file = File.open("#{directory}/#{deck.name}", 'w')
         file.write(deck.to_json)
+        file.close
       end
     end
   end

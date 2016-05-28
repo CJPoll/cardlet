@@ -1,45 +1,71 @@
 module Cardlet
   class Response
-    def initialize(response, question)
-      @question = question
+    def initialize(response, card)
+      @card = card
       @response = response
     end
 
     def correct?
-      @question.answer == @response
+      @card.correct?(@response)
     end
   end
 
   class Quiz
-    def initialize(questions, shuffle=true)
-      @questions = shuffled(questions, shuffle)
+    def initialize(cards, shuffle=true)
+      @cards = shuffled(cards, shuffle)
       @correct = []
       @incorrect = []
     end
 
     def start
-      ask_questions(@questions)
-      give_feedback(@questions.length, @correct.length, @incorrect.length)
+      ask_cards(@cards)
+      give_feedback(@cards.length, @correct.length, @incorrect.length)
     end
 
     private
 
-    def ask(question)
-      puts question.prompt
-      response = STDIN.gets.chomp
-      Cardlet::Response.new(response, question)
+    class AskQuestion
+      def run(card)
+        puts card.prompt
+        response = STDIN.gets.chomp
+
+        Cardlet::Response.new(response, card)
+      end
     end
 
-    def ask_questions(questions)
-      @questions.each do |question|
-        response = ask(question)
+    class AskFacetedQuestion
+      def run(card)
+        puts card.prompt
+        response = []
+        input = STDIN.gets.chomp
+        until input.empty?
+          response << input
+          input = STDIN.gets.chomp
+        end
+
+        Cardlet::Response.new(response, card)
+      end
+    end
+
+    def ask(card)
+      askers = {
+        'question' => AskQuestion,
+        'faceted_question' => AskFacetedQuestion
+      }
+
+      askers[card.type].new.run(card)
+    end
+
+    def ask_cards(cards)
+      @cards.each do |card|
+        response = ask(card)
 
         if response.correct?
           congratulate
-          @correct << question
+          @correct << card
         else
-          correct(question)
-          @incorrect << question
+          correct(card)
+          @incorrect << card
         end
       end
     end
@@ -49,16 +75,16 @@ module Cardlet
       puts
     end
 
-    def correct(question)
-      puts "Almost - the correct answer is: #{question.answer}"
+    def correct(card)
+      puts "Almost - the correct answer is: #{card.answer}"
       puts
     end
 
-    def give_feedback(question_count, correct_count, incorrect_count)
-      percentage = Float(correct_count) / question_count * 100
+    def give_feedback(card_count, correct_count, incorrect_count)
+      percentage = Float(correct_count) / card_count * 100
 
       puts <<-EOF
-      You got #{correct_count} questions right out of #{question_count}.
+      You got #{correct_count} cards right out of #{card_count}.
       That means you got #{percentage}% correct.
       EOF
 
@@ -69,9 +95,9 @@ module Cardlet
       end
     end
 
-    def shuffled(questions, shuffle)
-      return questions.shuffle if shuffle
-      return questions
+    def shuffled(cards, shuffle)
+      return cards.shuffle if shuffle
+      return cards
     end
   end
 end

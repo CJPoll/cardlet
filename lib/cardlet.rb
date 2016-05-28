@@ -1,8 +1,10 @@
-require './lib/cardlet/hash'
-require './lib/cardlet/question'
-require './lib/cardlet/deck'
-require './lib/cardlet/persistence/deck'
-require './lib/cardlet/quiz'
+require 'cardlet/hash'
+require 'cardlet/cards/question'
+require 'cardlet/cards/faceted_question'
+require 'cardlet/cards/card'
+require 'cardlet/deck'
+require 'cardlet/persistence/deck'
+require 'cardlet/quiz'
 
 class DeckNotFoundError < StandardError; end
 
@@ -18,9 +20,9 @@ module Cardlet
     Cardlet::Persistence::Deck.index(directory)
   end
 
-  def self.list_questions(deck, directory=DEFAULT_DIR)
+  def self.list_cards(deck, directory=DEFAULT_DIR)
     deck = get_deck(deck, directory)
-    deck.questions
+    deck.cards
   end
 
   def self.delete(name, directory=DEFAULT_DIR)
@@ -31,16 +33,12 @@ module Cardlet
     Cardlet::Persistence::Deck.exist?(deck, directory)
   end
 
-  def self.create_card(deck, prompt, answer, directory=DEFAULT_DIR)
+  def self.create_card(deck, hash, directory=DEFAULT_DIR)
     deck = get_deck(deck, directory)
 
-    card = Cardlet::Question.create({
-      'type' => 'question',
-      'prompt' => prompt,
-      'answer' => answer
-    })
+    card = Cardlet::Cards::Card.create(hash)
 
-    deck.add_question(card)
+    deck.add_card(card)
 
     Cardlet::Persistence::Deck.write(deck, directory)
 
@@ -50,7 +48,7 @@ module Cardlet
   def self.delete_card(deck, uuid, directory=DEFAULT_DIR)
     deck = get_deck(deck, directory)
 
-    deck.delete_question(uuid)
+    deck.delete_card(uuid)
 
     Cardlet::Persistence::Deck.write(deck, directory)
 
@@ -60,7 +58,7 @@ module Cardlet
   def self.tag(deck, card_uuids, tag, directory=DEFAULT_DIR)
     deck = get_deck(deck, directory)
 
-    deck.questions.each do |card|
+    deck.cards.each do |card|
       card.add_tag(tag) if card_uuids.include?(card.uuid)
     end
 
